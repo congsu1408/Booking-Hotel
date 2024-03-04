@@ -27,7 +27,7 @@
                             <h3 class="heading">{{ $hotel->name }}</h3>
                             <p>{{ $hotel->description  }}</p>
                             <p>Location: {{$hotel->location}}.</p>
-                            <p><a href="rooms.html" class="btn btn-primary">View rooms</a></p>
+                            <p><a href="{{route('hotel.rooms', $hotel->id)}}" class="btn btn-primary">View rooms</a></p>
                         </div>
                     </div>
                 </div>
