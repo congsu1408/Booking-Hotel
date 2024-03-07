@@ -22,24 +22,25 @@
     <div class="container">
         <div class="row justify-content-end">
             <div class="col-lg-4">
-                <form action="#" class="appointment-form" style="margin-top: -568px;">
+                <form action="{{route('hotel.rooms.booking', $getRoom->id)}}" method="post" class="appointment-form" style="margin-top: -568px;">
+                    @csrf
                     <h3 class="mb-3">Book this room</h3>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Email">
+                                <input name="email" type="text" class="form-control" placeholder="Email">
                             </div>
                         </div>
 
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Full Name">
+                                <input name="name" type="text" class="form-control" placeholder="Full Name">
                             </div>
                         </div>
 
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Phone Number">
+                                <input name="phone_number" type="text" class="form-control" placeholder="Phone Number">
                             </div>
                         </div>
 
@@ -47,7 +48,7 @@
                             <div class="form-group">
                                 <div class="input-wrap">
                                     <div class="icon"><span class="ion-md-calendar"></span></div>
-                                    <input type="text" class="form-control appointment_date-check-in" placeholder="Check-In">
+                                    <input name="check_in" type="text" class="form-control appointment_date-check-in" placeholder="Check-In">
                                 </div>
                             </div>
                         </div>
@@ -55,7 +56,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <div class="icon"><span class="ion-md-calendar"></span></div>
-                                <input type="text" class="form-control appointment_date-check-out" placeholder="Check-Out">
+                                <input name="check_out" type="text" class="form-control appointment_date-check-out" placeholder="Check-Out">
                             </div>
                         </div>
 
