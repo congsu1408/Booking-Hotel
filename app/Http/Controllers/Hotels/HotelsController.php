@@ -10,6 +10,9 @@ use App\Models\Booking\Booking;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
+
 class HotelsController extends Controller
 {
 
@@ -73,7 +76,12 @@ class HotelsController extends Controller
                     'room_name' => $room->name,
                     'hotel_name' => $hotel->name,
                 ]);
-                    echo "booking successful!";
+
+                $totalPrice = $room->price * $days;
+                $price = Session::put('price', $totalPrice);
+                $getPrice = Session::get($price);
+
+                return Redirect::route('hotel.pay');
                 }
                 else{
                     echo "check out date must be greater than check in date!";
@@ -85,5 +93,11 @@ class HotelsController extends Controller
 
     }
 
+    public function payWithPaypal(){
+        return view('hotels.pay');
+    }
 
+    public function success(){
+        return view('hotels.success');
+    }
 }
