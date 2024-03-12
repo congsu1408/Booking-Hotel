@@ -10,13 +10,28 @@
     <div class="container">
         <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start" data-scrollax-parent="true">
             <div class="col-md-7 ftco-animate">
-                <h2 class="subheading">Welcome to Vacation Rental</h2>
+                <h2 class="subheading">Welcome to Booking Hotel</h2>
                 <h1 class="mb-4">{{$getRoom->name}}</h1>
                 <!-- <p><a href="#" class="btn btn-primary">Learn more</a> <a href="#" class="btn btn-white">Contact us</a></p> -->
             </div>
         </div>
     </div>
 </div>
+<div class="container">
+    @if(session()->has('error'))
+        <div class="alert alert-success">
+            {{ session()->get('error') }}
+        </div>
+    @endif
+</div>
+    <div class="container">
+    @if(session()->has('error_dates'))
+        <div class="alert alert-success">
+            {{ session()->get('error_dates') }}
+        </div>
+    @endif
+</div>
+
 
 <section class="ftco-section ftco-book ftco-no-pt ftco-no-pb">
     <div class="container">
@@ -64,7 +79,11 @@
 
                         <div class="col-md-12">
                             <div class="form-group">
+                                @if(isset(Auth::user()->id))
                                 <input type="submit" value="Book and Pay Now" class="btn btn-primary py-3 px-4">
+                                @else
+                                <a href="{{route('login')}}" class="btn btn-primary py-3 px-4">Login to Book</a>
+                                @endif
                             </div>
                         </div>
                     </div>

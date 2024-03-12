@@ -28,33 +28,12 @@ class HotelsController extends Controller
 
     }
     public function roomBooking(Request $request,$id){
-            /*$room = Apartment::find($id);
-            $hotel = Hotel::find($id);
-            if(date("Y/m/d") < $request->check_in AND date("Y/m/d") < $request->check_out){
-
-
-                if($request->check_in < $request->check_out){
-
-                    $datetime1 = new DateTime($request->check_in);
-                    $datetime2 = new DateTime($request->check_out);
-                    $interval = $datetime1->diff($datetime2);
-                    $days = $interval->format('%a');
-
-
-                    $bookRooms = Booking::create([
-                        'name' => $request->name,
-                        'email' => $request->email,
-                        'phone_number' => $request->phone_number,
-                        'check_in' => $request->check_in,
-                        'check_out' => $request->check_out,
-                        'days' => $days,
-                        'price' => $room->price * $days,
-                        'user_id' => Auth::user()->id,
-                        'room_name' => $room->name,
-                        'hotel_name' => $hotel->name,
-                    ]);*/
         $room = Apartment::find($id);
-        $hotel = Hotel::find($id);
+        // Lấy hotel_id từ room
+        $hotelId = $room->hotel_id;
+
+        // Tìm đối tượng Hotel tương ứng
+        $hotel = Hotel::find($hotelId);
 
         $checkIn = Carbon::createFromFormat('m/d/Y', $request->check_in)->format('Y-m-d');
         $checkOut = Carbon::createFromFormat('m/d/Y', $request->check_out)->format('Y-m-d');
@@ -84,11 +63,13 @@ class HotelsController extends Controller
                 return Redirect::route('hotel.pay');
                 }
                 else{
-                    echo "check out date must be greater than check in date!";
+
+                    return Redirect::route('hotel.rooms.details', $room->id)-> with(['error' => 'check out date must be greater than check in date!']);
                 }
             }
             else{
-                echo "choose a valid date!";
+                return Redirect::route('hotel.rooms.details', $room->id)-> with(['error_dates' => 'choose date in the future!']);
+
             }
 
     }
@@ -98,6 +79,8 @@ class HotelsController extends Controller
     }
 
     public function success(){
+
+        Session::forget('price');
         return view('hotels.success');
     }
 }
