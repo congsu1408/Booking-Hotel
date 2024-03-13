@@ -1,3 +1,7 @@
+<?php
+use Illuminate\Support\Facades\Auth;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,9 +25,10 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarText">
+                @auth('admin')
                 <ul class="navbar-nav side-nav" >
                     <li class="nav-item">
-                        <a class="nav-link" style="margin-left: 20px;" href="index.html">Home
+                        <a class="nav-link" style="margin-left: 20px;" href="{{route('admins.dashboard')}}">Home
                             <span class="sr-only">(current)</span>
                         </a>
                     </li>
@@ -40,24 +45,32 @@
                         <a class="nav-link" href="bookings-admins/show-bookings.html" style="margin-left: 20px;">Bookings</a>
                     </li>
                 </ul>
+                @endauth
                 <ul class="navbar-nav ml-md-auto d-md-flex">
+                    @auth('admin')
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">Home
+                        <a class="nav-link" href="{{route('admins.dashboard')}}">Home
                             <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="admins/login-admins.html">login
                         </a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link  dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            username
+                            {{Auth::guard('admin')->user()->name}}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Logout</a>
+                            <a class="dropdown-item" href="{{route('logout')}}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Logout</a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                         </div>
                     </li>
+                    @else
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('view.login')}}">login
+                        </a>
+                    </li>
+                    @endauth
+
                 </ul>
             </div>
         </div>
