@@ -15,7 +15,7 @@ class Apartment extends Model
     protected $fillable = [
         'name',
         'image',
-        'max_persions',
+        'max_persons',
         'size',
         'view',
         'num_beds',

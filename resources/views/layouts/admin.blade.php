@@ -33,16 +33,16 @@ use Illuminate\Support\Facades\Auth;
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="admins/admins.html" style="margin-left: 20px;">Admins</a>
+                        <a class="nav-link" href="{{route('admins.all')}}" style="margin-left: 20px;">Admins</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="hotels-admins/show-hotels.html" style="margin-left: 20px;">Hotels</a>
+                        <a class="nav-link" href="{{route('hotels.all')}}" style="margin-left: 20px;">Hotels</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="rooms-admins/show-rooms.html" style="margin-left: 20px;">Rooms</a>
+                        <a class="nav-link" href="{{route('rooms.all')}}" style="margin-left: 20px;">Rooms</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="bookings-admins/show-bookings.html" style="margin-left: 20px;">Bookings</a>
+                        <a class="nav-link" href="{{route('bookings.all')}}" style="margin-left: 20px;">Bookings</a>
                     </li>
                 </ul>
                 @endauth
