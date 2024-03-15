@@ -21,6 +21,7 @@
                         <th scope="col">#</th>
                         <th scope="col">username</th>
                         <th scope="col">email</th>
+                        <th scope="col">delete</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -29,6 +30,7 @@
                         <th scope="row">{{$admin->id}}</th>
                         <td>{{$admin->name}}</td>
                         <td>{{$admin->email}}</td>
+                        <td><a href="{{route('admins.delete',$admin->id)}}" class="btn btn-danger  text-center ">Delete </a></td>
                     </tr>
                     @endforeach
                     </tbody>

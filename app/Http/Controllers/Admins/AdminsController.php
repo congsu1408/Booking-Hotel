@@ -7,6 +7,7 @@ use App\Models\Admin\Admin;
 use App\Models\Apartment\Apartment;
 use App\Models\Booking\Booking;
 use App\Models\Hotel\Hotel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
@@ -39,8 +40,10 @@ class AdminsController extends Controller
         $adminsCount = Admin::select()->count();
         $hotelCount = Hotel::select()->count();
         $roomsCount = Apartment::select()->count();
+        $bookingsCount = Booking::select()->count();
+        $usersCount = User::select()->count();
 
-        return view('admins.index', compact('adminsCount', 'hotelCount', 'roomsCount'));
+        return view('admins.index', compact('adminsCount', 'hotelCount', 'roomsCount', 'bookingsCount', 'usersCount'));
     }
 
     public function allAdmins()
@@ -66,6 +69,13 @@ class AdminsController extends Controller
             return redirect()->route('admins.all')->with(['success' => 'Admin created successfully']);
         }
     return redirect()->back()->with(['error' => 'error creating admin']);
+    }
+
+    public function deleteAdmins($id)
+    {
+        $admin = Admin::find($id);
+        $admin->delete();
+        return redirect()->route('admins.all')->with(['success' => 'Admin deleted successfully']);
     }
 
     public function allHotels()
@@ -227,5 +237,18 @@ class AdminsController extends Controller
         $booking = Booking::find($id);
         $booking->delete();
         return redirect()->route('bookings.all')->with(['success' => 'Booking deleted successfully']);
+    }
+
+    public function allUsers()
+    {
+        $users = User::select()->orderBy('id', 'desc')->get();
+        return view('admins.allusers', compact('users'));
+    }
+
+    public function deleteUsers($id)
+    {
+        $user = User::find($id);
+        $user->delete();
+        return redirect()->route('users.all')->with(['success' => 'User deleted successfully']);
     }
 }

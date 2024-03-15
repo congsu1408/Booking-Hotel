@@ -52,6 +52,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth:admin'], function (){
     Route::get('/all-admins', [App\Http\Controllers\Admins\AdminsController::class, 'allAdmins'])->name('admins.all');
     Route::get('/create-admins', [App\Http\Controllers\Admins\AdminsController::class, 'createAdmins'])->name('admins.create');
     Route::post('/create-admins', [App\Http\Controllers\Admins\AdminsController::class, 'storeAdmins'])->name('admins.store');
+    Route::get('/delete-admins/{id}', [App\Http\Controllers\Admins\AdminsController::class, 'deleteAdmins'])->name('admins.delete');
 
 
 
@@ -75,6 +76,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth:admin'], function (){
     Route::post('/update-status/{id}', [App\Http\Controllers\Admins\AdminsController::class, 'updateStatus'])->name('bookings.update.status');
     Route::get('/delete-booking/{id}', [App\Http\Controllers\Admins\AdminsController::class, 'deleteBooking'])->name('bookings.delete');
 
+    //users
+    Route::get('/all-users', [App\Http\Controllers\Admins\AdminsController::class, 'allUsers'])->name('users.all');
+    Route::get('/delete-users/{id}', [App\Http\Controllers\Admins\AdminsController::class, 'deleteUsers'])->name('users.delete');
 
 
 
