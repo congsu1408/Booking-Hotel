@@ -19,22 +19,21 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">name</th>
-                        <th scope="col">image</th>
-                        <th scope="col">price</th>
-                        <th scope="col">max_persons</th>
-                        <th scope="col">size</th>
-                        <th scope="col">view</th>
-                        <th scope="col">num of beds</th>
-                        <th scope="col">delete</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Max_persons</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">View</th>
+                        <th scope="col">Num of beds</th>
+                        <th scope="col">Hotel name</th>
+                        <th scope="col">Delete</th>
                     </tr>
                     </thead>
                     <tbody>
 
                         @foreach($rooms as $room)
                         <tr>
-                            <th scope="row">{{$room->id}}</th>
                             <td>{{$room->name}}</td>
                             <td><img src="{{asset('assets/images/'.$room->image.'')}}" alt="" style="width: 80px; height: 80px;"></td>
                             <td>{{$room->price}}</td>
@@ -42,7 +41,11 @@
                             <td>{{$room->size}}</td>
                             <td>{{$room->view}}</td>
                             <td>{{$room->num_beds}}</td>
-                            <td>{{$room->status}}</td>
+                            @foreach($hotels as $hotel)
+                            @if($hotel->id == $room->hotel_id)
+                            <td>{{$hotel->name}}</td>
+                            @endif
+                            @endforeach
                             <td><a href="{{route('rooms.delete',$room->id)}}" class="btn btn-danger  text-center ">Delete </a></td>
                         </tr>
                         @endforeach

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 11, 2024 lúc 10:48 AM
+-- Thời gian đã tạo: Th3 21, 2024 lúc 02:34 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -20,6 +20,30 @@ SET time_zone = "+00:00";
 --
 -- Cơ sở dữ liệu: `hotel`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `admins`
+--
+
+CREATE TABLE `admins` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `admins`
+--
+
+INSERT INTO `admins` (`id`, `name`, `email`, `password`, `created_at`, `updated_at`) VALUES
+(1, 'Công Sử', 'admin@gmail.com', '$2y$12$Cdv9lrZdz7uk1Owj7kfz4.QNYppxgfvADspIVJN0Iio0P4tp5wwGS', '2024-03-12 18:15:32', '2024-03-12 18:15:32'),
+(2, 'Đình Phúc', 'admin2@gmail.com', '$2y$12$GEa7RVH/AdEEYUmQ65Hyge/GlF5dre31J9Wb2.Aw/2irJF5wkRXRG', '2024-03-13 23:46:10', '2024-03-13 23:46:10'),
+(5, 'Quỳnh Hương', 'admin3@gmail.com', '$2y$12$RBXVYgdCrcpqYjJtjOS/xOp8udFc0mFIij99Gjk38YVsHwVD0dmi2', '2024-03-13 23:51:14', '2024-03-13 23:51:14');
 
 -- --------------------------------------------------------
 
@@ -81,8 +105,9 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`id`, `name`, `email`, `phone_number`, `check_in`, `check_out`, `days`, `price`, `user_id`, `room_name`, `hotel_name`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Su', 'test2@gmail.com', '01234566', '2024-03-13', '2024-03-15', 2, 160.00, 1, 'Family Room', 'The Ritz', NULL, '2024-03-10 13:22:12', '2024-03-10 13:22:12'),
-(2, 'Su', 'test2@gmail.com', '01234566', '2024-03-13', '2024-03-15', 2, 200.00, 1, 'Luxury Room', 'The Plaza Hotel', 'Processing', '2024-03-10 13:33:04', '2024-03-10 13:33:04');
+(1, 'Su', 'test2@gmail.com', '01234566', '2024-03-13', '2024-03-15', 2, 160.00, 1, 'Family Room', 'The Ritz', 'Processing', '2024-03-10 13:22:12', '2024-03-14 13:07:49'),
+(3, 'Đào Công Sử', 'congsu@gmail.com', '+84962897842', '2024-03-12', '2024-03-16', 4, 280.00, 2, 'Standard Room', 'The Plaza Hotel', 'Processing', '2024-03-11 03:01:41', '2024-03-11 03:01:41'),
+(5, 'Đào Công Sử', 'congsu@gmail.com', '+84925426249', '2024-03-16', '2024-03-18', 2, 160.00, 2, 'Family Room', 'The Ritz', 'Booked Successfully', '2024-03-14 20:16:23', '2024-03-14 20:23:35');
 
 -- --------------------------------------------------------
 
@@ -121,9 +146,9 @@ CREATE TABLE `hotels` (
 --
 
 INSERT INTO `hotels` (`id`, `name`, `image`, `description`, `location`, `created_at`, `updated_at`) VALUES
-(1, 'Sheraton', 'services-1.jpg', 'Efficiently deploy low-risk high-yield users for clicks-and-mortar data. Continually aggregate user-centric solutions without adaptive quality vectors. Continually visualize principle-centered process improvements rather than business partnerships.', 'Cairo', '2024-03-10 19:57:15', '2024-03-10 19:57:15'),
 (2, 'The Plaza Hotel', 'image_4.jpg', 'Seamlessly supply one-to-one scenarios through tactical platforms. Distinctively communicate B2C innovation after diverse supply chains. Monotonectally utilize extensive niches after go forward bandwidth. Professionally incubate.', 'New york', '2024-03-10 19:57:15', '2024-03-10 19:57:15'),
-(3, 'The Ritz', 'image_4.jpg', 'Proactively drive functional content after enterprise-wide products. Objectively visualize error-free sources and revolutionary potentialities. Conveniently provide access to superior technology after viral ROI. Uniquely cultivate.', 'Paris', '2024-03-10 19:57:15', '2024-03-10 19:57:15');
+(3, 'The MAC', 'image_4.jpg', 'Proactively drive functional content after enterprise-wide products. Objectively visualize error-free sources and revolutionary potentialities. Conveniently provide access to superior technology after viral ROI. Uniquely cultivate.', 'Viet Nam', '2024-03-10 19:57:15', '2024-03-14 20:22:27'),
+(4, 'Ho Guom Plaza', 'services-1.jpg', 'Synergistically cultivate next-generation content for covalent networks. Synergistically disseminate sticky bandwidth through high standards in infrastructures.', 'Viet Nam', '2024-03-14 00:30:14', '2024-03-14 03:46:29');
 
 -- --------------------------------------------------------
 
@@ -213,11 +238,19 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Đào Công Sử', 'admin@email.com', NULL, '$2y$12$Lffa7ll2ZKUxurO2QWKPGe7RSZJdYkq8GW.XE9Xawbq2xl/0KA1qe', NULL, '2024-03-10 12:46:01', '2024-03-10 12:46:01');
+(2, 'Đào Công Sử', 'congsu@gmail.com', NULL, '$2y$12$Cdv9lrZdz7uk1Owj7kfz4.QNYppxgfvADspIVJN0Iio0P4tp5wwGS', NULL, '2024-03-11 02:52:42', '2024-03-11 02:52:42'),
+(3, 'Phúc Đình', 'phuc@gmail.com', NULL, '$2y$12$MoA.fBDrEK6v/kLiXW8fxuxEcGWa5Sgm2Pfp5tAojZqhTEtRwwskq', NULL, '2024-03-14 20:25:38', '2024-03-14 20:25:38');
 
 --
 -- Chỉ mục cho các bảng đã đổ
 --
+
+--
+-- Chỉ mục cho bảng `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Chỉ mục cho bảng `apartments`
@@ -282,16 +315,22 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT cho bảng `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT cho bảng `apartments`
 --
 ALTER TABLE `apartments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT cho bảng `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `failed_jobs`
@@ -303,7 +342,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT cho bảng `hotels`
 --
 ALTER TABLE `hotels`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `migrations`
@@ -321,7 +360,7 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

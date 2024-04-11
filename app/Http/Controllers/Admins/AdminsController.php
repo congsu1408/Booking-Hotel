@@ -145,19 +145,26 @@ class AdminsController extends Controller
     public function deleteHotels($id)
     {
         $hotel = Hotel::find($id);
-        if(File::exists(public_path('assets/images/' . $hotel->image))){
+       /* if(File::exists(public_path('assets/images/' . $hotel->image))){
             File::delete(public_path('assets/images/' . $hotel->image));
         }else{
             //dd('File does not exists.');
+        }*/
+        $rooms = Apartment::where('hotel_id', $id)->get();
+        foreach ($rooms as $room){
+            $room->delete();
         }
         $hotel->delete();
+
         return redirect()->route('hotels.all')->with(['success' => 'Hotel deleted successfully']);
     }
 
     public function allRooms()
     {
         $rooms = Apartment::select()->orderBy('id', 'desc')->get();
-        return view('admins.allrooms', compact('rooms'));
+        $hotels = Hotel::all();
+
+        return view('admins.allrooms', compact('rooms', 'hotels'));
     }
 
     public function createRooms()
@@ -188,7 +195,8 @@ class AdminsController extends Controller
             'max_persons' => $request->max_persons,
             'view' => $request->view,
             'num_beds' => $request->num_beds,
-            'price' => $request->hotel_id,
+            'price' => $request->price,
+            'hotel_id' => $request->hotel_id,
         ]);
 
         if ($storeRooms) {
