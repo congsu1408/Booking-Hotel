@@ -19,7 +19,6 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">name</th>
                         <th scope="col">email</th>
                         <th scope="col">phone number</th>
@@ -38,7 +37,6 @@
                     <tbody>
                     @foreach($bookings as $booking)
                     <tr>
-                        <th scope="row">{{$booking->id}}</th>
                         <td>{{$booking->name}}</td>
                         <td>{{$booking->email}}</td>
                         <td>{{$booking->phone_number}}</td>
