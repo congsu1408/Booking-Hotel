@@ -9,6 +9,7 @@ use App\Models\Booking\Booking;
 use App\Models\Hotel\Hotel;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
 
@@ -36,15 +37,46 @@ class AdminsController extends Controller
 
     public function index()
     {
-
         $adminsCount = Admin::select()->count();
         $hotelCount = Hotel::select()->count();
         $roomsCount = Apartment::select()->count();
         $bookingsCount = Booking::select()->count();
         $usersCount = User::select()->count();
 
-        return view('admins.index', compact('adminsCount', 'hotelCount', 'roomsCount', 'bookingsCount', 'usersCount'));
+        // Lấy số lượng đặt phòng theo tháng
+        $bookingsByMonth = Booking::select(
+            DB::raw('COUNT(*) as count'),
+            DB::raw('MONTH(created_at) as month')
+        )
+            ->groupBy('month')
+            ->pluck('count', 'month')
+            ->toArray();
+
+        // Lấy doanh thu theo tháng
+        $revenueByMonth = Booking::select(
+            DB::raw('SUM(price) as revenue'),
+            DB::raw('MONTH(created_at) as month')
+        )
+            ->groupBy('month')
+            ->pluck('revenue', 'month')
+            ->toArray();
+
+        // Lấy tỷ lệ đặt phòng theo tên khách sạn
+        $bookingsByHotel = Booking::select(
+            'hotel_name',
+            DB::raw('COUNT(*) as count')
+        )
+            ->groupBy('hotel_name')
+            ->pluck('count', 'hotel_name')
+            ->toArray();
+
+        return view('admins.index', compact(
+            'adminsCount', 'hotelCount', 'roomsCount', 'bookingsCount', 'usersCount',
+            'bookingsByMonth', 'revenueByMonth', 'bookingsByHotel'
+        ));
     }
+
+
 
     public function allAdmins()
     {
@@ -164,8 +196,21 @@ class AdminsController extends Controller
         $rooms = Apartment::select()->orderBy('id', 'desc')->get();
         $hotels = Hotel::all();
 
-        return view('admins.allrooms', compact('rooms', 'hotels'));
+        // Dữ liệu cho biểu đồ số phòng của mỗi khách sạn
+        $hotelRoomCounts = [];
+        foreach ($hotels as $hotel) {
+            $hotelRoomCounts[$hotel->name] = $rooms->where('hotel_id', $hotel->id)->count();
+        }
+
+        // Dữ liệu cho biểu đồ loại view
+        $viewCounts = $rooms->groupBy('view')->map->count();
+
+        // Dữ liệu cho biểu đồ giá
+        $prices = $rooms->pluck('price');
+
+        return view('admins.allrooms', compact('rooms', 'hotels', 'hotelRoomCounts', 'viewCounts', 'prices'));
     }
+
 
     public function createRooms()
     {

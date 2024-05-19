@@ -12,8 +12,28 @@
                             </div>
                         @endif
                     </div>
-                    <h5 class="card-title mb-4 d-inline">Bookings</h5>
 
+                    <!-- Chart Containers -->
+                    <div class="charts-container" style="display: flex; justify-content: space-between;">
+                        <div >
+                            <h5>Bookings by Room Name</h5>
+                            <canvas id="bookingsByRoomChart" width="200" height="200"></canvas>
+                        </div>
+                        <div>
+                            <h5>Bookings by Hotel Name</h5>
+                            <canvas id="bookingsByHotelChart" width="200" height="200"></canvas>
+                        </div>
+                        <div>
+                            <h5>Bookings by Days</h5>
+                            <canvas id="bookingsByDaysChart" width="200" height="200"></canvas>
+                        </div>
+                        <div>
+                            <h5>Total Booking Amount by Month</h5>
+                            <canvas id="totalBookingAmountChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    <br>
+                    <h5 class="card-title mb-4 d-inline">Bookings</h5>
                     <table class="table">
                         <thead>
                         <tr>
@@ -53,25 +73,7 @@
                         </tbody>
                     </table>
 
-                    <!-- Chart Containers -->
-                    <div class="charts-container" style="display: flex; justify-content: space-between;">
-                        <div >
-                            <h5>Bookings by Room Name</h5>
-                            <canvas id="bookingsByRoomChart" width="200" height="200"></canvas>
-                        </div>
-                        <div>
-                            <h5>Bookings by Hotel Name</h5>
-                            <canvas id="bookingsByHotelChart" width="200" height="200"></canvas>
-                        </div>
-                        <div>
-                            <h5>Bookings by Days</h5>
-                            <canvas id="bookingsByDaysChart" width="200" height="200"></canvas>
-                        </div>
-                        <div>
-                            <h5>Total Booking Amount by Month</h5>
-                            <canvas id="totalBookingAmountChart" width="400" height="200"></canvas>
-                        </div>
-                    </div>
+
 
                 </div>
             </div>
