@@ -52,7 +52,7 @@
                             <th scope="col">delete</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="bookings-table-body">
                         @foreach($bookings as $booking)
                             <tr>
                                 <td>{{$booking->name}}</td>
@@ -72,9 +72,6 @@
                         @endforeach
                         </tbody>
                     </table>
-
-
-
                 </div>
             </div>
         </div>
@@ -82,81 +79,105 @@
 
     <!-- Prepare the data for Chart.js -->
     <script>
-
-
-
         document.addEventListener('DOMContentLoaded', function () {
-            // Prepare the data
-            var bookings = @json($bookings);
+            var bookingsByRoomChart;
+            var bookingsByHotelChart;
+            var bookingsByDaysChart;
+            var totalBookingAmountChart;
 
-            // Aggregate data by room name
-            var roomCounts = {};
-            var hotelCounts = {};
-            var daysCounts = {};
-            var monthlyAmounts = {};
+            function fetchAndRenderData() {
+                fetch("{{ route('get.bookings.data') }}")
+                    .then(response => response.json())
+                    .then(bookings => {
+                        // Process the data
+                        var roomCounts = {};
+                        var hotelCounts = {};
+                        var daysCounts = {};
+                        var monthlyAmounts = {};
 
+                        bookings.forEach(function(booking) {
+                            // Aggregate by room name
+                            if (roomCounts[booking.room_name]) {
+                                roomCounts[booking.room_name]++;
+                            } else {
+                                roomCounts[booking.room_name] = 1;
+                            }
 
+                            // Aggregate by hotel name
+                            if (hotelCounts[booking.hotel_name]) {
+                                hotelCounts[booking.hotel_name]++;
+                            } else {
+                                hotelCounts[booking.hotel_name] = 1;
+                            }
 
-            bookings.forEach(function(booking) {
-                // Aggregate by room name
-                if (roomCounts[booking.room_name]) {
-                    roomCounts[booking.room_name]++;
-                } else {
-                    roomCounts[booking.room_name] = 1;
-                }
+                            // Aggregate by days
+                            if (daysCounts[booking.days]) {
+                                daysCounts[booking.days]++;
+                            } else {
+                                daysCounts[booking.days] = 1;
+                            }
 
-                // Aggregate by hotel name
-                if (hotelCounts[booking.hotel_name]) {
-                    hotelCounts[booking.hotel_name]++;
-                } else {
-                    hotelCounts[booking.hotel_name] = 1;
-                }
+                            // Aggregate by month for total amount
+                            var checkInDate = new Date(booking.check_in);
+                            var month = checkInDate.getMonth() + 1; // Months are zero-based
+                            var year = checkInDate.getFullYear();
+                            var monthYear = year + '-' + month;
 
-                // Aggregate by days
-                if (daysCounts[booking.days]) {
-                    daysCounts[booking.days]++;
-                } else {
-                    daysCounts[booking.days] = 1;
-                }
+                            if (monthlyAmounts[monthYear]) {
+                                monthlyAmounts[monthYear] += parseFloat(booking.price);
+                            } else {
+                                monthlyAmounts[monthYear] = parseFloat(booking.price);
+                            }
+                        });
 
-                // Aggregate by month for total amount
-                var checkInDate = new Date(booking.check_in);
-                var month = checkInDate.getMonth() + 1; // Months are zero-based
-                var year = checkInDate.getFullYear();
-                var monthYear = year + '-' + month;
+                        // Prepare data for Chart.js
+                        var roomLabels = Object.keys(roomCounts);
+                        var roomData = Object.values(roomCounts);
 
-                if (monthlyAmounts[monthYear]) {
-                    monthlyAmounts[monthYear] += parseFloat(booking.price);
-                } else {
-                    monthlyAmounts[monthYear] = parseFloat(booking.price);
-                }
-            });
+                        var hotelLabels = Object.keys(hotelCounts);
+                        var hotelData = Object.values(hotelCounts);
 
-            // Prepare data for Chart.js
-            var roomLabels = Object.keys(roomCounts);
-            var roomData = Object.values(roomCounts);
+                        var daysLabels = Object.keys(daysCounts);
+                        var daysData = Object.values(daysCounts);
 
-            var hotelLabels = Object.keys(hotelCounts);
-            var hotelData = Object.values(hotelCounts);
+                        var monthlyLabels = Object.keys(monthlyAmounts);
+                        var monthlyData = Object.values(monthlyAmounts);
 
-            var daysLabels = Object.keys(daysCounts);
-            var daysData = Object.values(daysCounts);
+                        // Update the charts with new data
+                        if (bookingsByRoomChart) {
+                            bookingsByRoomChart.data.labels = roomLabels;
+                            bookingsByRoomChart.data.datasets[0].data = roomData;
+                            bookingsByRoomChart.update();
+                        }
 
-            var monthlyLabels = Object.keys(monthlyAmounts);
-            var monthlyData = Object.values(monthlyAmounts);
+                        if (bookingsByHotelChart) {
+                            bookingsByHotelChart.data.labels = hotelLabels;
+                            bookingsByHotelChart.data.datasets[0].data = hotelData;
+                            bookingsByHotelChart.update();
+                        }
 
-            // đặt kích thước cho biểu đồ
-            var canvas = document.getElementById('bookingsByRoomChart');
-            canvas.width = 200;
-            canvas.height = 200;
-            // Bookings by Room Name
+                        if (bookingsByDaysChart) {
+                            bookingsByDaysChart.data.labels = daysLabels;
+                            bookingsByDaysChart.data.datasets[0].data = daysData;
+                            bookingsByDaysChart.update();
+                        }
+
+                        if (totalBookingAmountChart) {
+                            totalBookingAmountChart.data.labels = monthlyLabels;
+                            totalBookingAmountChart.data.datasets[0].data = monthlyData;
+                            totalBookingAmountChart.update();
+                        }
+                    });
+            }
+
+            // Initialize charts
             var ctxRoom = document.getElementById('bookingsByRoomChart').getContext('2d');
-            var bookingsByRoomChart = new Chart(ctxRoom, {
+            bookingsByRoomChart = new Chart(ctxRoom, {
                 type: 'doughnut',
                 data: {
-                    labels: roomLabels,
+                    labels: [],
                     datasets: [{
-                        data: roomData,
+                        data: [],
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.6)',
                             'rgba(54, 162, 235, 0.6)',
@@ -191,18 +212,13 @@
                 }
             });
 
-            // đặt kích thước cho biểu đồ
-            var canvas = document.getElementById('bookingsByHotelChart');
-            canvas.width = 200;
-            canvas.height = 200;
-            // Bookings by Hotel Name
             var ctxHotel = document.getElementById('bookingsByHotelChart').getContext('2d');
-            var bookingsByHotelChart = new Chart(ctxHotel, {
+            bookingsByHotelChart = new Chart(ctxHotel, {
                 type: 'doughnut',
                 data: {
-                    labels: hotelLabels,
+                    labels: [],
                     datasets: [{
-                        data: hotelData,
+                        data: [],
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.6)',
                             'rgba(54, 162, 235, 0.6)',
@@ -237,18 +253,13 @@
                 }
             });
 
-            // đặt kích thước cho biểu đồ
-            var canvas = document.getElementById('bookingsByDaysChart');
-            canvas.width = 200;
-            canvas.height = 200;
-            // Bookings by Days
             var ctxDays = document.getElementById('bookingsByDaysChart').getContext('2d');
-            var bookingsByDaysChart = new Chart(ctxDays, {
+            bookingsByDaysChart = new Chart(ctxDays, {
                 type: 'doughnut',
                 data: {
-                    labels: daysLabels,
+                    labels: [],
                     datasets: [{
-                        data: daysData,
+                        data: [],
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.6)',
                             'rgba(54, 162, 235, 0.6)',
@@ -283,19 +294,14 @@
                 }
             });
 
-            // đặt kích thước cho biểu đồ
-            var canvas = document.getElementById('totalBookingAmountChart');
-            canvas.width = 200;
-            canvas.height = 200;
-            // Total Booking Amount by Month
             var ctxMonthly = document.getElementById('totalBookingAmountChart').getContext('2d');
-            var totalBookingAmountChart = new Chart(ctxMonthly, {
-                type: 'bar',
+            totalBookingAmountChart = new Chart(ctxMonthly, {
+                type: 'line',
                 data: {
-                    labels: monthlyLabels,
+                    labels: [],
                     datasets: [{
                         label: 'Total Amount',
-                        data: monthlyData,
+                        data: [],
                         backgroundColor: 'rgba(54, 162, 235, 0.6)',
                         borderColor: 'rgba(54, 162, 235, 1)',
                         borderWidth: 1
@@ -320,8 +326,12 @@
                     }
                 }
             });
+
+            // Fetch and render data initially
+            fetchAndRenderData();
+
+            // Set an interval to fetch and render data periodically
+            setInterval(fetchAndRenderData, 5000); // Every 60 seconds
         });
-
-
     </script>
 @endsection

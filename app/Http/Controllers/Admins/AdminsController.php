@@ -304,4 +304,55 @@ class AdminsController extends Controller
         $user->delete();
         return redirect()->route('users.all')->with(['success' => 'User deleted successfully']);
     }
+
+    public function getData()
+    {
+        // Fetch the data from the database
+        $bookingsByMonth = Booking::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            ->groupBy('month')
+            ->pluck('count', 'month');
+
+        $revenueByMonth = Booking::selectRaw('MONTH(created_at) as month, SUM(price) as total')
+            ->groupBy('month')
+            ->pluck('total', 'month');
+
+        $bookingsByHotel = Booking::selectRaw('hotel_name, COUNT(*) as count')
+            ->groupBy('hotel_name')
+            ->pluck('count', 'hotel_name');
+
+        return response()->json([
+            'bookingsByMonth' => $bookingsByMonth,
+            'revenueByMonth' => $revenueByMonth,
+            'bookingsByHotel' => $bookingsByHotel
+        ]);
+    }
+
+
+    public function getRoomsData()
+    {
+        $hotelRoomCounts = Apartment::selectRaw('hotel_id, COUNT(*) as count')
+            ->groupBy('hotel_id')
+            ->pluck('count', 'hotel_id');
+
+        $viewCounts = Apartment::selectRaw('view, COUNT(*) as count')
+            ->groupBy('view')
+            ->pluck('count', 'view');
+
+        $prices = Apartment::pluck('price', 'name');
+
+        return response()->json([
+            'hotelRoomCounts' => $hotelRoomCounts,
+            'viewCounts' => $viewCounts,
+            'prices' => $prices,
+        ]);
+    }
+
+
+    public function getBookingsData()
+    {
+        $bookings = Booking::all(); // Adjust the query as needed
+        return response()->json($bookings);
+    }
+
+
 }

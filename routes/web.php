@@ -80,6 +80,12 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth:admin'], function (){
     Route::get('/all-users', [App\Http\Controllers\Admins\AdminsController::class, 'allUsers'])->name('users.all');
     Route::get('/delete-users/{id}', [App\Http\Controllers\Admins\AdminsController::class, 'deleteUsers'])->name('users.delete');
 
+    //getdata
+    Route::get('/getdata', [App\Http\Controllers\Admins\AdminsController::class, 'getData'])->name('get.data');
+    //getRoomsData
+    Route::get('/getRoomsData', [App\Http\Controllers\Admins\AdminsController::class, 'getRoomsData'])->name('get.rooms.data');
+    //getBookingsData
+    Route::get('/getBookingsData', [App\Http\Controllers\Admins\AdminsController::class, 'getBookingsData'])->name('get.bookings.data');
 
 
 });

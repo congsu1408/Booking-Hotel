@@ -92,128 +92,118 @@
 
     </style>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var hotelRoomChart, viewChart, priceChart;
 
-        // Dữ liệu cho biểu đồ số phòng của khách sạn
-        const hotelRoomData = {
-            labels: {!! json_encode(array_keys($hotelRoomCounts)) !!},
-            datasets: [{
-                label: 'Number of Rooms',
-                data: {!! json_encode(array_values($hotelRoomCounts)) !!},
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)'
-                ],
-                borderWidth: 1
-            }]
-        };
+            // Initialize or update charts
+            function updateCharts(data) {
+                // Update hotel room chart
+                if (!hotelRoomChart) {
+                    const ctxHotelRoom = document.getElementById('hotelRoomChart').getContext('2d');
+                    hotelRoomChart = new Chart(ctxHotelRoom, {
+                        type: 'bar',
+                        data: {
+                            labels: Object.keys(data.hotelRoomCounts),
+                            datasets: [{
+                                label: 'Number of Rooms',
+                                data: Object.values(data.hotelRoomCounts),
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: false,
+                            maintainAspectRatio: false
+                        }
+                    });
+                } else {
+                    hotelRoomChart.data.labels = Object.keys(data.hotelRoomCounts);
+                    hotelRoomChart.data.datasets[0].data = Object.values(data.hotelRoomCounts);
+                    hotelRoomChart.update();
+                }
 
-        const hotelRoomConfig = {
-            type: 'bar',
-            data: hotelRoomData,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                // Update view chart
+                if (!viewChart) {
+                    const ctxView = document.getElementById('viewChart').getContext('2d');
+                    viewChart = new Chart(ctxView, {
+                        type: 'pie',
+                        data: {
+                            labels: Object.keys(data.viewCounts),
+                            datasets: [{
+                                label: 'Number of Rooms',
+                                data: Object.values(data.viewCounts),
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.6)',
+                                    'rgba(54, 162, 235, 0.6)',
+                                    'rgba(255, 206, 86, 0.6)',
+                                    'rgba(75, 192, 192, 0.6)',
+                                    'rgba(153, 102, 255, 0.6)',
+                                    'rgba(255, 159, 64, 0.6)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        }
+                    });
+                } else {
+                    viewChart.data.labels = Object.keys(data.viewCounts);
+                    viewChart.data.datasets[0].data = Object.values(data.viewCounts);
+                    viewChart.update();
+                }
+
+                // Update price chart
+                if (!priceChart) {
+                    const ctxPrice = document.getElementById('priceChart').getContext('2d');
+                    priceChart = new Chart(ctxPrice, {
+                        type: 'line',
+                        data: {
+                            labels: Object.keys(data.prices),
+                            datasets: [{
+                                label: 'Room Prices',
+                                data: Object.values(data.prices),
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: false,
+                            maintainAspectRatio: false
+                        }
+                    });
+                } else {
+                    priceChart.data.labels = Object.keys(data.prices);
+                    priceChart.data.datasets[0].data = Object.values(data.prices);
+                    priceChart.update();
                 }
             }
-        };
 
-
-        const hotelRoomChart = new Chart(
-            document.getElementById('hotelRoomChart'),
-            hotelRoomConfig
-        );
-
-        // Dữ liệu cho biểu đồ loại view
-        const viewData = {
-            labels: {!! json_encode(array_keys($viewCounts->toArray())) !!},
-            datasets: [{
-                label: 'Number of Rooms',
-                data: {!! json_encode(array_values($viewCounts->toArray())) !!},
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)'
-                ],
-                borderWidth: 1
-            }]
-        };
-
-        const viewConfig = {
-            type: 'pie',
-            data: viewData
-        };
-
-        const viewChart = new Chart(
-            document.getElementById('viewChart'),
-            viewConfig
-        );
-
-        // Dữ liệu cho biểu đồ giá
-        const priceData = {
-            labels: {!! json_encode($rooms->pluck('name')) !!},
-            datasets: [{
-                label: 'Room Prices',
-                data: {!! json_encode($prices) !!},
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)'
-                ],
-                borderWidth: 1
-            }]
-        };
-
-        const priceConfig = {
-            type: 'line',
-            data: priceData,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+            // Fetch data from server
+            function fetchData() {
+                fetch('{{ route('get.rooms.data') }}')
+                    .then(response => response.json())
+                    .then(data => {
+                        updateCharts(data);
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
             }
-        };
 
-        const priceChart = new Chart(
-            document.getElementById('priceChart'),
-            priceConfig
-        );
+            // Initial fetch
+            fetchData();
+
+            // Fetch new data every 60 seconds
+            setInterval(fetchData, 5000);
+        });
+
+
     </script>
+
 @endsection
