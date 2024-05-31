@@ -1,6 +1,4 @@
-Xin lỗi vì sự nhầm lẫn. Dưới đây là một README.md được thiết kế dành cho một dự án PHP Laravel, bao gồm hướng dẫn cài đặt, chạy mã, và các thông tin cần thiết khác.
 
----
 
 # Booking Hotel
 
