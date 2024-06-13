@@ -87,5 +87,10 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth:admin'], function (){
     //getBookingsData
     Route::get('/getBookingsData', [App\Http\Controllers\Admins\AdminsController::class, 'getBookingsData'])->name('get.bookings.data');
 
+    //performance-report
+    Route::get('/performance-report', [App\Http\Controllers\Admins\AdminsController::class, 'performanceReport'])->name('performance.report');
+
+    //downloadPerformanceReport
+   //Route::get('/download-performance-report', [App\Http\Controllers\Admins\AdminsController::class, 'downloadPerformanceReport'])->name('download.performance.report');
 
 });

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
+use PDF;
 
 class AdminsController extends Controller
 {
@@ -353,6 +354,82 @@ class AdminsController extends Controller
         $bookings = Booking::all(); // Adjust the query as needed
         return response()->json($bookings);
     }
+
+    public function performanceReport()
+    {
+        try {
+            // Lấy tổng số phòng
+            $totalRooms = DB::table('apartments')->count();
+
+            // Lấy tổng số đặt phòng trong tháng hiện tại
+            $currentMonthBookings = DB::table('bookings')
+                ->whereMonth('created_at', date('m'))
+                ->count();
+
+            // Tính tỷ lệ lấp đầy (occupancy rate)
+            $occupancyRate = $totalRooms > 0 ? ($currentMonthBookings / $totalRooms) * 100 : 0;
+
+            // Lấy tổng doanh thu trong tháng hiện tại
+            $currentMonthRevenue = DB::table('bookings')
+                ->whereMonth('created_at', date('m'))
+                ->sum('price');
+
+            // Tính doanh thu trung bình mỗi phòng (RevPAR)
+            $RevPAR = $totalRooms > 0 ? $currentMonthRevenue / $totalRooms : 0;
+
+            // Define KPI
+            $kpi = 1500.00; // Example KPI value
+            $meetsKpi = $currentMonthRevenue >= $kpi;
+
+            // Trả về view với dữ liệu
+            return view('admins.performance-report', [
+                'totalRooms' => $totalRooms,
+                'currentMonthBookings' => $currentMonthBookings,
+                'occupancyRate' => $occupancyRate,
+                'currentMonthRevenue' => $currentMonthRevenue,
+                'RevPAR' => $RevPAR,
+                'meetsKpi' => $meetsKpi,
+                'kpi' => $kpi
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching performance report: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
+    }
+
+
+/*public function downloadPerformanceReport()
+    {
+        try {
+            // Lấy dữ liệu báo cáo như phương thức performanceReport
+            $totalRooms = DB::table('rooms')->count();
+            $currentMonthBookings = DB::table('bookings')
+                ->whereMonth('created_at', date('m'))
+                ->count();
+            $occupancyRate = $totalRooms > 0 ? ($currentMonthBookings / $totalRooms) * 100 : 0;
+            $currentMonthRevenue = DB::table('bookings')
+                ->whereMonth('created_at', date('m'))
+                ->sum('total_price');
+            $RevPAR = $totalRooms > 0 ? $currentMonthRevenue / $totalRooms : 0;
+
+            $data = [
+                'totalRooms' => $totalRooms,
+                'currentMonthBookings' => $currentMonthBookings,
+                'occupancyRate' => $occupancyRate,
+                'currentMonthRevenue' => $currentMonthRevenue,
+                'RevPAR' => $RevPAR
+            ];
+
+            // Tạo PDF từ view
+            $pdf = PDF::loadView('admin.performance-report-pdf', $data);
+
+            // Trả về file PDF để tải về
+            return $pdf->download('performance-report.pdf');
+        } catch (\Exception $e) {
+            \Log::error('Error fetching performance report: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
+    }*/
 
 
 }

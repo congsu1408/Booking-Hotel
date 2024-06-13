@@ -48,6 +48,9 @@ use Illuminate\Support\Facades\Auth;
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('users.all')}}" style="margin-left: 20px;">Users</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('performance.report')}}" style="margin-left: 20px;">Performance Report</a>
+                    </li>
                 </ul>
                 @endauth
                 <ul class="navbar-nav ml-md-auto d-md-flex">
